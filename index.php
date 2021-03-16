@@ -13,14 +13,15 @@ try {
      */
     $isForced = in_array($argv[3], ['--force']);
     if ($argc === 3 || ($argc === 4 && $isForced)) {
-        /* create log record */
-        createLog($argv[1], $argv[2]);
+        $wordsCreated = 0;
         /* parse letter count argument to array */
         $letterQuantity = parseLetterQuantity($argv[1]);
 
         /* check if date is ok */
         $currentDate = getDate();
         if (!checkDateTime($currentDate, $isForced)) {
+            /* create log record */
+            createLog($argv[1], $wordsCreated.'/'.$argv[2]);
             echo 'You can\'t use this script now';
             return;
         }
@@ -33,9 +34,11 @@ try {
         /* create words */
         require_once './src/WordGenerator.php';
         $wordGenerator = new WordGenerator((int)$letterQuantity[0], (int)$letterQuantity[1]);
-        for ($i = 0; $i < $argv[2]; $i++) {
-            $wordGenerator->createWord();
+        for ($wordsCreated = 0; $wordsCreated < $argv[2]; $wordsCreated++) {
+            echo $wordGenerator->createWord()."\n";
         }
+        /* create log record */
+        createLog($argv[1], $wordsCreated.'/'.$argv[2]);
     } else {
         echo 'Usage: ./index.php < --force? > < number of words > < length of words >';
     }
@@ -50,7 +53,7 @@ try {
  * function checks if current date is between given boundaries
  * @param $date - array with date
  * @param $isForced - state of flag '--forced'
- * @return false if date boundaries are violeted, true if not
+ * @return false|true if date boundaries are violated, or not
  **/
 function checkDateTime($date, $isForced): bool {
     /* always return true if flag is raised */
