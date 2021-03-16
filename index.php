@@ -13,6 +13,7 @@ try {
      */
     $isForced = in_array($argv[3], ['--force']);
     if ($argc === 3 || ($argc === 4 && $isForced)) {
+        /* variable stores count of words created by WordGenerator */
         $wordsCreated = 0;
         /* parse letter count argument to array */
         $letterQuantity = parseLetterQuantity($argv[1]);
